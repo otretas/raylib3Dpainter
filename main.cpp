@@ -12,8 +12,6 @@
 #define textWidth 1024
 #define textHeight 1024
 
-// Write arguments to receive localization of the object to be loaded
-
 void DrawRefFrame()
 {
     DrawSphere(Vector3{0.0, 0.0, 0.0}, 0.4f, BLACK);
