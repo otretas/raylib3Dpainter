@@ -5,7 +5,7 @@
 #include "orbital_camera.h"
 #include "bvh.h"
 #include <iostream>
-#include <chrono>
+#include <string>
 
 #define screenWidth 800
 #define screenHeight 600
@@ -57,18 +57,29 @@ int main(int argc, char *argv[])
     
     if (argc < 3)
     {
-        std::cout << "...exe 'path to model' 'directory to shaders' "<<std::endl;
+        std::cout << ".exe \"path to model\" \"directory to shaders\" "<<std::endl;
         return 1;
     }
-    char* shader_dir = argv[2];
-    char* filename = argv[1];
+    std::string shader_dir = argv[2];
+    std::string filename = argv[1];
 
     InitWindow(screenWidth, screenHeight, "Model Viewer");
     SetTargetFPS(60);
     HideCursor();
 
+    // Setup the model
+    Model model = LoadModel(filename.c_str());
+    if (model.meshCount == 0)
+    {
+        std::cout << "Could not find the model: "<< filename << std::endl;
+        return 1;
+    }
+    Vector3 model_position = {0.0, 0.0, 0.0};
+    BoundingBox model_bbox = GetModelBoundingBox(model);
+
     // Setup the LightPoints
-    Shader shader = LoadShader("../../../shaders/vs.glsl","../../../shaders/fs.glsl");
+    Shader shader = LoadShader((shader_dir + "vs.glsl").c_str(), (shader_dir + "fs.glsl").c_str());
+    
     shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
     shader.locs[SHADER_LOC_MATRIX_MODEL] = GetShaderLocation(shader, "matModel");
     const int ambient_loc = GetShaderLocation(shader, "ambient");
@@ -77,8 +88,6 @@ int main(int argc, char *argv[])
     Light light_source = CreateLight(LIGHT_DIRECTIONAL, Vector3{120.0, 120.0, 120.0},
                                      Vector3{0.0, 0.0, 0.0}, WHITE, shader);
 
-    // Setup the model
-    Model model = LoadModel(filename);
     // Create Blank image and then load a texture with it
     Image image = GenImageColor(textWidth, textHeight, WHITE);
     Texture texture = LoadTextureFromImage(image);
@@ -92,8 +101,6 @@ int main(int argc, char *argv[])
     EndTextureMode();
     model.materials[MATERIAL_MAP_ALBEDO].maps[MATERIAL_MAP_DIFFUSE].texture = render_texture.texture;
     model.materials[MATERIAL_MAP_ALBEDO].shader = shader;
-    Vector3 model_position = {0.0, 0.0, 0.0};
-    BoundingBox model_bbox = GetModelBoundingBox(model);
 
     // Construct BVH model Tree
     const int triangleCount = model.meshes[0].triangleCount;
@@ -169,7 +176,7 @@ int main(int argc, char *argv[])
     }
 
     Image output_image = LoadImageFromTexture(render_texture.texture);
-    ExportImage(output_image, "../../../data/output_diffuse.png");
+    ExportImage(output_image, "output_diffuse.png");
 
     // Release memory
     UnloadImage(image);
@@ -179,8 +186,6 @@ int main(int argc, char *argv[])
     UnloadModel(model);
     UnloadShader(shader);
     CloseWindow();
-    delete shader_dir;
-    delete filename;
 
     return 0;
 }
