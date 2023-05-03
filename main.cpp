@@ -11,9 +11,7 @@
 #define screenHeight 600
 #define textWidth 1024
 #define textHeight 1024
-#define MAXPOINTS 200
 
-// https://blender.stackexchange.com/questions/36905/uv-coordinates-to-xyz-coordinates
 // TODO
 // Write arguments to receive localization of the object to be loaded
 
@@ -70,7 +68,6 @@ int main(int argc, char *argv[])
     HideCursor();
 
     // Setup the LightPoints
-    // Shader shader = LoadShader("../../../shaders/vs.glsl","../../../shaders/fs.glsl");
     Shader shader = LoadShader("../../../shaders/vs.glsl","../../../shaders/fs.glsl");
     shader.locs[SHADER_LOC_VECTOR_VIEW] = GetShaderLocation(shader, "viewPos");
     shader.locs[SHADER_LOC_MATRIX_MODEL] = GetShaderLocation(shader, "matModel");

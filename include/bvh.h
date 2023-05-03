@@ -1,9 +1,7 @@
 #include "raylib.h"
 
+// Adapted from
 // https://github.com/jbikker/bvh_article/blob/main/quickbuild.cpp
-
-// TODO
-// Change Triangle to include uv data for painting
 
 typedef struct RayCollisionUV
 {
@@ -47,8 +45,6 @@ Triangle GetTriangle(Mesh& mesh, unsigned int id, Matrix transform)
     Triangle tri;
     Vector3 a, b, c;
     Vector2 u1, u2, u3;
-    // Vector3* vertdata = (Vector3*)mesh.vertices;
-    // Vector2 *uvdata = (Vector2*)mesh.texcoords;
 
     if (mesh.indices)
     {   
