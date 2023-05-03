@@ -12,7 +12,6 @@
 #define textWidth 1024
 #define textHeight 1024
 
-// TODO
 // Write arguments to receive localization of the object to be loaded
 
 void DrawRefFrame()
